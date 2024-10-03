@@ -60,79 +60,94 @@ function gerarPDF() {
     const tabelaServicos = document.getElementById('tabelaServicos').getElementsByTagName('tbody')[0];
     const total = document.getElementById('total').innerText;
 
-    const doc = new jsPDF();
+    // Carregar a imagem do logo
+    const imgLogo = new Image();
+    imgLogo.src = 'img/logo.png';
+    imgLogo.onload = function() {
+        const doc = new jsPDF();
 
-    // Cabeçalho - ORÇAMENTO e Dados da Retífica
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(20);
-    doc.text('ORÇAMENTO', 105, 20, { align: 'center' });
+        // Adicionar a imagem do logo no canto superior direito e aumentar o tamanho
+        doc.addImage(imgLogo, 'PNG', 120, 10, 70, 35); // (imagem, formato, x, y, largura, altura)
 
-    doc.setFontSize(16);
-    doc.text('RETIFICA UNIÃO', 105, 30, { align: 'center' });
-
-    // Dados do Orçamento
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(12);
-    doc.text(`Data do Orçamento:`, 20, 50);
-    doc.setFont('helvetica', 'bold');
-    doc.text(`${dataOrcamento}`, 60, 50);
-
-    // Dados do Cliente
-    doc.setFont('helvetica', 'normal');
-    doc.text('Dados do Cliente:', 20, 60);
-    doc.text('Nome:', 20, 70);
-    doc.setFont('helvetica', 'bold');
-    doc.text(`${cliente}`, 40, 70);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Endereço:', 20, 80);
-    doc.setFont('helvetica', 'bold');
-    doc.text(`${endereco}`, 45, 80);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Motor:', 20, 90);
-    doc.setFont('helvetica', 'bold');
-    doc.text(`${motor}`, 35, 90);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Telefone:', 20, 100);
-    doc.setFont('helvetica', 'bold');
-    doc.text(`${fone}`, 45, 100);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Placa:', 20, 110);
-    doc.setFont('helvetica', 'bold');
-    doc.text(`${placa}`, 35, 110);
-
-    // Serviços
-    doc.setFont('helvetica', 'normal');
-    doc.text('Serviços:', 20, 130);
-    let yPos = 140;
-
-    for (let i = 0; i < tabelaServicos.rows.length; i++) {
-        const qnt = tabelaServicos.rows[i].getElementsByClassName('qntServico')[0].value;
-        const descricao = tabelaServicos.rows[i].getElementsByClassName('descricaoServico')[0].value;
-        const valorUnit = tabelaServicos.rows[i].getElementsByClassName('valorUnitServico')[0].value;
-        const totalItem = qnt * valorUnit;
-
+        // Cabeçalho - ORÇAMENTO
         doc.setFont('helvetica', 'bold');
-        doc.text(`${qnt}x ${descricao} - R$ ${parseFloat(valorUnit).toFixed(2)} - Total: R$ ${totalItem.toFixed(2)}`, 20, yPos);
-        yPos += 10;
-    }
+        doc.setFontSize(20);
+        doc.text('ORÇAMENTO', 20, 30); // Alinhado à esquerda
 
-    // Total e Assinaturas
-    doc.setFont('helvetica', 'bold');
-    doc.text(`Total: R$ ${total}`, 20, yPos + 20);
-    
-    // Linhas de assinatura acima dos rótulos
-    doc.line(20, yPos + 45, 100, yPos + 45); // Linha para assinatura do cliente
-    doc.text('Assinatura do Cliente:', 20, yPos + 50);
+        // Dados do Orçamento
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(12);
+        doc.text(`Data do Orçamento:`, 20, 50);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`${dataOrcamento}`, 60, 50);
 
-    doc.line(120, yPos + 45, 200, yPos + 45); // Linha para assinatura do representante
-    doc.text('Assinatura do Representante:', 120, yPos + 50);
+        // Dados do Cliente
+        doc.setFont('helvetica', 'bold');
+        doc.text('Dados do Cliente:', 20, 60);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Nome:', 20, 70);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`${cliente}`, 40, 70);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Endereço:', 20, 80);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`${endereco}`, 45, 80);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Motor:', 20, 90);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`${motor}`, 35, 90);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Telefone:', 20, 100);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`${fone}`, 45, 100);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Placa:', 20, 110);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`${placa}`, 35, 110);
 
-    // Rodapé - Dados da Empresa
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(10);
-    doc.text('RETIFICA UNIÃO - AV. DR. JOÃO SILVA FILHO, Q-C/ CASA 05 CONJ. BETÂNIA - BAIRRO: PIAUÍ', 105, 285, { align: 'center' });
-    doc.text('DAVID LIMA (RESPONSÁVEL) - Fone: (86) 9.9925-2173 - Aceitamos todos os cartões', 105, 290, { align: 'center' });
+        // Serviços
+        doc.setFont('helvetica', 'bold');
+        doc.text('Serviços:', 20, 130);
+        let yPos = 140;
 
-    // Baixar o PDF gerado
-    doc.save('orcamento.pdf');
+        for (let i = 0; i < tabelaServicos.rows.length; i++) {
+            const qnt = tabelaServicos.rows[i].getElementsByClassName('qntServico')[0].value;
+            const descricao = tabelaServicos.rows[i].getElementsByClassName('descricaoServico')[0].value;
+            const valorUnit = tabelaServicos.rows[i].getElementsByClassName('valorUnitServico')[0].value;
+            const totalItem = qnt * valorUnit;
+
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${qnt}x ${descricao} - R$ ${totalItem.toFixed(2)}`, 20, yPos);
+            yPos += 10;
+        }
+
+        // Total e Assinaturas
+        doc.setFont('helvetica', 'bold');
+        doc.text(`Total: R$ ${total}`, 20, yPos + 20);
+
+        // Carregar a imagem da assinatura
+        const imgSignature = new Image();
+        imgSignature.src = 'img/signature.png';
+        imgSignature.onload = function() {
+            // Adicionar a imagem da assinatura acima da linha do representante
+            doc.addImage(imgSignature, 'PNG', 120, yPos + 30, 80, 15); // (imagem, formato, x, y, largura, altura)
+
+            // Linhas de assinatura acima dos rótulos
+            doc.line(20, yPos + 45, 100, yPos + 45); // Linha para assinatura do cliente
+            doc.text('Assinatura do Cliente:', 20, yPos + 50);
+
+            doc.line(120, yPos + 45, 200, yPos + 45); // Linha para assinatura do representante
+            doc.text('Assinatura do Representante:', 120, yPos + 50);
+
+            // Rodapé - Dados da Empresa
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10);
+            doc.text('RETIFICA UNIÃO - AV. DR. JOÃO SILVA FILHO, Q-C / CASA 05 CONJ. BETÂNIA - BAIRRO: PIAUÍ', 105, 285, { align: 'center' });
+            doc.setFont('helvetica', 'normal');
+            doc.text('DAVID LIMA (RESPONSÁVEL) - Fone: (86) 9.9925-2173 - Aceitamos todos os cartões', 105, 290, { align: 'center' });
+
+            // Baixar o PDF gerado
+            doc.save('orcamento.pdf');
+        };
+    };
 }
